@@ -8,12 +8,14 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	godotenv.Load(".env")
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = ":8000"
+		port = "8000"
 	}
 	app := fiber.New()
 	app.Use(cors.Config{
@@ -25,5 +27,5 @@ func main() {
 	})
 	routes.UserRoute(app)
 	routes.Transaction(app)
-	log.Fatal(app.Listen(port))
+	log.Fatal(app.Listen(":" + port))
 }
