@@ -11,23 +11,33 @@ func CreateTransaction(c *fiber.Ctx) error {
 	if err := c.BodyParser(&transaction); err != nil {
 		return c.Status(fiber.StatusBadGateway).JSON(fiber.Map{"error": "error while parsing data"})
 	}
-	tk := transaction.CreateTrancaction()
 	transferTo, td := models.GetUserByEmail(transaction.EmailTo)
 	transferfrom, fd := models.GetUserByEmail(transaction.EmailFrom)
 	if transaction.CurrencyType == "USD" && transferfrom.DollarAcount <= transaction.Amount {
 		transferTo.DollarAcount = transferTo.DollarAcount + transaction.Amount
 		transferfrom.DollarAcount = transferfrom.DollarAcount - transaction.Amount
-
+		transaction.Status = "Succsessful"
 	}
 	if transaction.CurrencyType == "EUR" && transferfrom.EuroAccount <= transaction.Amount {
 		transferTo.DollarAcount = transferTo.DollarAcount + transaction.Amount
 		transferfrom.DollarAcount = transferfrom.DollarAcount - transaction.Amount
+		transaction.Status = "Succsessful"
 	}
-	if transaction.CurrencyType == "PUD" && transferfrom.PoundsAcount <= transaction.Amount {
+	if transaction.CurrencyType == "GBP" && transferfrom.PoundsAcount <= transaction.Amount {
 		transferTo.DollarAcount = transferTo.DollarAcount + transaction.Amount
 		transferfrom.DollarAcount = transferfrom.DollarAcount - transaction.Amount
+		transaction.Status = "Succsessful"
 	}
-
+	if transferfrom.DollarAcount > transaction.Amount {
+		transaction.Status = "Pending"
+	}
+	if transferfrom.EuroAccount > transaction.Amount {
+		transaction.Status = "Pending"
+	}
+	if transferfrom.PoundsAcount > transaction.Amount {
+		transaction.Status = "Pending"
+	}
+	tk := transaction.CreateTrancaction()
 	td.Save(transferTo)
 	fd.Save(transferfrom)
 	return c.Status(fiber.StatusBadRequest).JSON(tk)

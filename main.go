@@ -4,14 +4,18 @@ import (
 	"log"
 	"os"
 
+	"simba-clone/pkg/routes"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	godotenv.Load(".env")
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = ":8000"
+		port = "8000"
 	}
 	app := fiber.New()
 	app.Use(cors.Config{
@@ -21,5 +25,7 @@ func main() {
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("hello world")
 	})
-	log.Fatal(app.Listen(port))
+	routes.UserRoute(app)
+	routes.Transaction(app)
+	log.Fatal(app.Listen(":" + port))
 }

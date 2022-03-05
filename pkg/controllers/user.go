@@ -10,7 +10,7 @@ import (
 
 var db *gorm.DB
 
-func Register(c fiber.Ctx) error {
+func Register(c *fiber.Ctx) error {
 	newUser := new(models.User)
 	if err := c.BodyParser(&newUser); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "error while parsing json"})
@@ -19,7 +19,7 @@ func Register(c fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(&u)
 }
 
-func Login(c fiber.Ctx) error {
+func Login(c *fiber.Ctx) error {
 	user := new(models.User)
 	if err := c.BodyParser(&user); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "error while parsing json"})
@@ -28,13 +28,13 @@ func Login(c fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(&u)
 }
 
-func GetAllUser(c fiber.Ctx) error {
+func GetAllUser(c *fiber.Ctx) error {
 	allUser := new(models.User)
 	db.Find(&allUser)
 	return c.Status(fiber.StatusOK).JSON(allUser)
 }
 
-func GetSingleUser(c fiber.Ctx) error {
+func GetSingleUser(c *fiber.Ctx) error {
 	param := c.Params("id")
 	id, err := strconv.Atoi(param)
 	if err != nil {
@@ -44,7 +44,7 @@ func GetSingleUser(c fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(u)
 }
 
-func UpdateUser(c fiber.Ctx) error {
+func UpdateUser(c *fiber.Ctx) error {
 	user := new(models.User)
 	if err := c.BodyParser(&user); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "error  while parsing json"})
