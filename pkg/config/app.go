@@ -29,7 +29,7 @@ func Connect() {
 		dbname = "simba"
 	}
 	if dbport == "" {
-		dbport = "16020"
+		dbport = "14692"
 	}
 	dns := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v", host, user, password, dbname, dbport)
 	fmt.Print(dns)
