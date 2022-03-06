@@ -1,6 +1,6 @@
 module simba-clone
 
-go 1.17
+go 1.16
 
 require (
 	github.com/gofiber/fiber/v2 v2.27.0
