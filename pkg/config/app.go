@@ -11,11 +11,11 @@ import (
 var db *gorm.DB
 
 func Connect() {
-	host := os.Getenv("HOST")
-	user := os.Getenv("USER")
-	password := os.Getenv("PASSWORD")
-	dbname := os.Getenv("DBNAME")
-	dbport := os.Getenv("DBPORT")
+	host := os.Getenv("Host")
+	user := os.Getenv("User")
+	password := os.Getenv("Password")
+	dbname := os.Getenv("Database")
+	dbport := os.Getenv("Port")
 	if host == "" {
 		host = "localhost"
 	}
