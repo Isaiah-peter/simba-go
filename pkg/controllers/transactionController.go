@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"simba-clone/pkg/models"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -47,4 +48,19 @@ func GetAllTransaction(c *fiber.Ctx) error {
 	tk := new(models.Transaction)
 	db.Find(tk)
 	return c.Status(fiber.StatusBadRequest).JSON(tk)
+}
+
+func UpdateTransaction(c *fiber.Ctx) error {
+	tk := new(models.Transaction)
+	if err := c.BodyParser(tk); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "fail to parse"})
+	}
+	transctionId := c.Params("id")
+	id, err := strconv.Atoi(transctionId)
+	if err != nil {
+		panic(err)
+	}
+	transaction, db := models.GetTransactionById(id)
+	db.Save(transaction)
+	return c.Status(fiber.StatusBadRequest).JSON(transaction)
 }

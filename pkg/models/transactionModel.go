@@ -21,3 +21,9 @@ func GetUserByEmail(email string) (*User, *gorm.DB) {
 	db := db.Where("email = ?", email).Find(user)
 	return user, db
 }
+
+func GetTransactionById(id int) (*Transaction, *gorm.DB) {
+	transaction := new(Transaction)
+	db := db.Where("ID = ?", id).Find(transaction)
+	return transaction, db
+}
