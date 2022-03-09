@@ -6,7 +6,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.27.0
 	github.com/gofiber/jwt/v3 v3.2.6
 	github.com/golang-jwt/jwt/v4 v4.3.0
-	golang.org/x/crypto v0.0.0-20220214200702-86341886e292
+	golang.org/x/crypto v0.0.0-20220307211146-efcb8507fb70
 )
 
 require (
