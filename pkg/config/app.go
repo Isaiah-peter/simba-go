@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"strconv"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -15,7 +16,7 @@ func Connect() {
 	user := os.Getenv("User")
 	password := os.Getenv("Password")
 	dbname := os.Getenv("Database")
-	dbport := os.Getenv("Port")
+	var dbport, _ = strconv.Atoi(os.Getenv("Port"))
 	if host == "" {
 		host = "localhost"
 	}
@@ -28,12 +29,11 @@ func Connect() {
 	if dbname == "" {
 		dbname = "simba"
 	}
-	if dbport == "" {
-		dbport = "14692"
+	if dbport == 0 {
+		dbport = 5500
 	}
-	dns := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v", host, user, password, dbname, dbport)
-	fmt.Print(dns)
-	d, err := gorm.Open(postgres.Open(dns), &gorm.Config{})
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+"password=%s dbname=%s sslmode=disable", host, dbport, user, password, dbname)
+	d, err := gorm.Open(postgres.Open(psqlInfo), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}

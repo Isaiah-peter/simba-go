@@ -11,6 +11,7 @@ require (
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
+	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.10.1 // indirect
@@ -24,6 +25,7 @@ require (
 	github.com/jinzhu/now v1.1.4 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/klauspost/compress v1.14.1 // indirect
+	github.com/lib/pq v1.10.4 // indirect
 	github.com/oasislabs/ed25519 v0.0.0-20200302143042-29f6767a7c3e // indirect
 	github.com/perlin-network/noise v1.1.3 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
@@ -36,6 +38,8 @@ require (
 	golang.org/x/sys v0.0.0-20220111092808-5a964db01320 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/tools v0.1.9 // indirect
+	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	gorm.io/driver/mysql v1.3.2 // indirect
 	gorm.io/driver/postgres v1.3.1 // indirect
 	gorm.io/gorm v1.23.1 // indirect
 )
