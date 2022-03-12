@@ -27,3 +27,9 @@ func GetTransactionById(id int) (*Transaction, *gorm.DB) {
 	db := db.Where("ID = ?", id).Find(transaction)
 	return transaction, db
 }
+
+func GetAllTransaction() []Transaction {
+	var Transaction []Transaction
+	db.Find(&Transaction)
+	return Transaction
+}

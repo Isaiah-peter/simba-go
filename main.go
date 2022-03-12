@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"os"
 
 	"simba-clone/pkg/routes"
@@ -18,14 +17,15 @@ func main() {
 		port = "8000"
 	}
 	app := fiber.New()
-	app.Use(cors.Config{
+	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
 		AllowMethods: "GET,POST,DELETE,HEAD,PUT",
-	})
+	}))
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("hello world")
 	})
+
 	routes.UserRoute(app)
 	routes.Transaction(app)
-	log.Fatal(app.Listen(":" + port))
+	app.Listen(":" + port)
 }

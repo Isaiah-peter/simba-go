@@ -18,4 +18,5 @@ func UserRoute(route *fiber.App) {
 func Transaction(route *fiber.App) {
 	route.Post("/transfer", utils.Authuser(), controllers.CreateTransaction)
 	route.Get("/alltransaction", utils.Authuser(), controllers.GetAllTransaction)
+	route.Put("/update/transfer", utils.Authuser(), controllers.UpdateTransaction)
 }

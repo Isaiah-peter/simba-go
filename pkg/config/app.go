@@ -3,37 +3,29 @@ package config
 import (
 	"fmt"
 	"os"
-	"strconv"
 
-	"gorm.io/driver/postgres"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 var db *gorm.DB
 
 func Connect() {
-	host := os.Getenv("Host")
-	user := os.Getenv("User")
-	password := os.Getenv("Password")
-	dbname := os.Getenv("Database")
-	var dbport, _ = strconv.Atoi(os.Getenv("Port"))
-	if host == "" {
-		host = "localhost"
-	}
-	if user == "" {
-		user = "postgres"
-	}
-	if password == "" {
-		password = "etanuwoma"
-	}
+	dbname := os.Getenv("db_name")
 	if dbname == "" {
 		dbname = "simba"
 	}
-	if dbport == 0 {
-		dbport = 5500
+
+	dbuser := os.Getenv("db_username")
+	if dbuser == "" {
+		dbuser = "isaiah"
 	}
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+"password=%s dbname=%s sslmode=disable", host, dbport, user, password, dbname)
-	d, err := gorm.Open(postgres.Open(psqlInfo), &gorm.Config{})
+	dbpass := os.Getenv("db_")
+	if dbpass == "" {
+		dbpass = "Etanuwoma18"
+	}
+	dns := fmt.Sprintf("%s:%s@/%s?charset=utf8&parseTime=True&loc=Local", dbuser, dbpass, dbname)
+	d, err := gorm.Open(mysql.Open(dns), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"simba-clone/pkg/config"
 	utils "simba-clone/pkg/util"
 	"time"
@@ -14,24 +15,12 @@ var db *gorm.DB
 
 type User struct {
 	gorm.Model
-	Name         string
-	Email        string
-	Password     string
-	DollarAcount int
-	EuroAccount  int
-	PoundsAcount int
-}
-
-type LoginResponse struct {
-	userId       int
-	name         string
-	email        string
-	dollarAcount int
-	euroAccount  int
-	poundsAcount int
-	accessToken  string
-	errorMessage string
-	status       bool
+	Name         string `json:"name"`
+	Email        string `json:"email"`
+	Password     string `json:"password"`
+	DollarAcount int    `json:"dollar_acc"`
+	EuroAccount  int    `json:"euro_acc"`
+	PoundsAcount int    `json:"pounds_acc"`
 }
 
 type Token struct {
@@ -55,29 +44,29 @@ func (u *User) CreateUser() *User {
 
 func GetUserById(id int) (*User, *gorm.DB) {
 	var user User
-	db.Find(user, id)
+	db.Find(&user, id)
 	return &user, db
 }
+func GetUser() []User {
+	var User []User
+	db.Find(&User)
+	return User
+}
 
-func FindUser(email, password string) *LoginResponse {
+func FindOne(email string, password string) map[string]interface{} {
 	var newUser *User
-	if err := db.Find(&newUser, "email = ?", email); err != nil {
-		return &LoginResponse{
-			errorMessage: "unkown email",
-			status:       false,
-		}
+	if err := db.Where("email = ?", email).First(&newUser).Error; err != nil {
+		var resp = map[string]interface{}{"status": false, "message": "Email address not found"}
+		return resp
 	}
-
 	expireAt := time.Now().Add(time.Hour * 2)
-
-	errp := bcrypt.CompareHashAndPassword([]byte(newUser.Password), []byte(password))
-	if errp != nil && errp == bcrypt.ErrMismatchedHashAndPassword {
-		return &LoginResponse{
-			errorMessage: "password unkown or mismarch",
-			status:       false,
-		}
+	errf := bcrypt.CompareHashAndPassword([]byte(newUser.Password), []byte(password))
+	if errf != nil && errf == bcrypt.ErrMismatchedHashAndPassword { //Password does not match!
+		var resp = map[string]interface{}{"status": false, "password": newUser.Password, "message": "Invalid login credentials. Please try again"}
+		return resp
 	}
 
+	fmt.Println(errf)
 	tk := &Token{
 		UserId: int(newUser.ID),
 		Email:  newUser.Email,
@@ -88,22 +77,22 @@ func FindUser(email, password string) *LoginResponse {
 		},
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodES256, tk)
-	tokenString, err := token.SignedString([]byte("qwertyuiopoiuytr"))
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, tk)
+
+	tokenString, err := token.SignedString([]byte("my_secret_key"))
 	if err != nil {
 		panic(err)
 	}
-	result := &LoginResponse{
-		userId:       int(newUser.ID),
-		name:         newUser.Name,
-		email:        newUser.Email,
-		dollarAcount: newUser.DollarAcount,
-		poundsAcount: newUser.PoundsAcount,
-		euroAccount:  newUser.EuroAccount,
-		accessToken:  tokenString,
-		errorMessage: "login successful",
-		status:       true,
-	}
 
-	return result
+	var resp = map[string]interface{}{
+		"status":     true,
+		"message":    "logged in",
+		"token":      tokenString,
+		"name":       newUser.Name,
+		"email":      newUser.Email,
+		"pounds_acc": newUser.PoundsAcount,
+		"euro_acc":   newUser.EuroAccount,
+		"dollar_acc": newUser.DollarAcount,
+	}
+	return resp
 }
