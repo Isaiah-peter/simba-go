@@ -33,3 +33,9 @@ func GetAllTransaction() []Transaction {
 	db.Find(&Transaction)
 	return Transaction
 }
+
+func GetTransactionByTwoEmail(email string) *Transaction {
+	transaction := new(Transaction)
+	db.Where("email_to = ? ", email).Or("email_form = ? ", email).Find(transaction)
+	return transaction
+}

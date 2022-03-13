@@ -21,7 +21,6 @@ func CreateTransaction(c *fiber.Ctx) error {
 	}
 	transferTo, td := models.GetUserByEmail(transaction.EmailTo)
 	transferfrom, fd := models.GetUserById(id)
-
 	if transaction.CurrencyType == "USD" && transferfrom.DollarAcount >= transaction.Amount {
 		transferTo.DollarAcount = transferTo.DollarAcount + transaction.Amount
 		transferfrom.DollarAcount = transferfrom.DollarAcount - transaction.Amount
@@ -69,5 +68,12 @@ func UpdateTransaction(c *fiber.Ctx) error {
 	}
 	transaction, db := models.GetTransactionById(id)
 	db.Save(transaction)
-	return c.Status(fiber.StatusBadRequest).JSON(transaction)
+	return c.Status(fiber.StatusOK).JSON(transaction)
+}
+
+func GetTransaction(c *fiber.Ctx) error {
+	token := utils.UseToken(c)
+	email := string(fmt.Sprintf("%v", token["Email"]))
+	u := models.GetTransactionByTwoEmail(email)
+	return c.Status(fiber.StatusOK).JSON(&u)
 }
